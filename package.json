@@ -1,0 +1,9 @@
+{
+  "name": "rakshaone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "test": "node tests/assessment.test.mjs"
+  }
+}

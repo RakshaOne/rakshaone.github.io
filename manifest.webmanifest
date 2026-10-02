@@ -1,0 +1,14 @@
+{
+  "name": "RakshaOne — Personal Safety Learning",
+  "short_name": "RakshaOne",
+  "description": "Learn practical personal safety through short lessons and private movement coaching.",
+  "start_url": "./index.html#/home",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f3ed",
+  "theme_color": "#f8f3ed",
+  "icons": [
+    { "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
