@@ -4,6 +4,7 @@ const L = { nose:0, leftEar:7, rightEar:8, leftShoulder:11, rightShoulder:12, le
 export const ASSESSMENTS = {
   ready_stance: { title:'Balanced ready stance', view:'Face the camera with your whole body visible.', kind:'static', target:'Feet comfortably apart, weight centered, shoulders relaxed.', criteria:[
     { id:'width', label:'Stable base', metric:'stanceWidth', range:[0.75,1.8], weight:3, low:'Widen your feet a little.', high:'Bring your feet slightly closer.' },
+    { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' },
     { id:'center', label:'Centered balance', metric:'balance', range:[0,0.42], weight:3, high:'Shift your weight toward the middle of your feet.' },
     { id:'upright', label:'Upright posture', metric:'upright', range:[0,0.42], weight:2, high:'Bring your shoulders above your hips.' }
   ]},
@@ -11,15 +12,18 @@ export const ASSESSMENTS = {
     { id:'hands', label:'Hand height', metric:'handHeight', range:[-0.12,0.24], weight:3, low:'Lower your hands slightly so you can see clearly.', high:'Raise both hands toward your upper chest.' },
     { id:'elbows', label:'Elbow position', metric:'elbowSpread', range:[0.2,1.2], weight:2, high:'Bring your elbows a little closer to your body.' },
     { id:'base', label:'Stable base', metric:'stanceWidth', range:[0.7,1.9], weight:2, low:'Widen your stance a little.', high:'Bring your feet closer.' },
+    { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' },
     { id:'center', label:'Balance', metric:'balance', range:[0,0.5], weight:2, high:'Keep your weight centered.' }
   ]},
   head_cover: { title:'Protective head cover', view:'Face the camera with both arms visible.', kind:'static', target:'Hands near the sides of your head, elbows forward, feet stable.', criteria:[
     { id:'cover', label:'Head coverage', metric:'earDistance', range:[0,0.95], weight:4, high:'Bring your hands a little nearer the sides of your head.' },
     { id:'base', label:'Stable base', metric:'stanceWidth', range:[0.7,1.9], weight:2, low:'Widen your feet a little.', high:'Bring your feet closer.' },
+    { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' },
     { id:'center', label:'Balance', metric:'balance', range:[0,0.5], weight:2, high:'Keep your weight centered.' }
   ]},
   side_step: { title:'Step toward an open route', view:'Face the camera. Leave room on each side to step.', kind:'dynamic', target:'Start balanced, step sideways with control, then settle into a balanced stance.', movement:'horizontal', criteria:[
     { id:'base', label:'Stable base', metric:'stanceWidth', range:[0.65,2.0], weight:2, low:'Keep a little more width between your feet.', high:'Bring your feet closer.' },
+    { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' },
     { id:'center', label:'Balance', metric:'balance', range:[0,0.7], weight:2, high:'Bring your weight back over your feet.' },
     { id:'travel', label:'Clear step', metric:'travel', range:[0.35,2.8], weight:3, low:'Take one clear side step into your open space.' },
     { id:'recovery', label:'Recovery', metric:'recovery', range:[0,0.6], weight:2, high:'Return to a balanced ready position.' }
@@ -27,6 +31,7 @@ export const ASSESSMENTS = {
   guard_step: { title:'Open hands, then move', view:'Face the camera with both hands and feet visible.', kind:'dynamic', target:'Raise open hands, take one side step, and settle with balance.', movement:'horizontal', criteria:[
     { id:'hands', label:'Open-hand position', metric:'handHeight', range:[-0.12,0.24], weight:3, low:'Lower your hands enough to keep a clear view.', high:'Raise your open hands toward your upper chest.' },
     { id:'base', label:'Stable base', metric:'stanceWidth', range:[0.65,2.0], weight:2, low:'Keep a little space between your feet.', high:'Bring your feet slightly closer.' },
+    { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' },
     { id:'travel', label:'Side step', metric:'travel', range:[0.35,2.8], weight:3, low:'Take one clear step toward your open side.' },
     { id:'recovery', label:'Balanced finish', metric:'recovery', range:[0,0.6], weight:2, high:'Settle with your head above your feet.' }
   ]}
@@ -70,6 +75,7 @@ export function metrics(p, calibration, session={}) {
   const travel=session.originX==null?0:abs(currentX-session.originX)/sw;
   return {
     stanceWidth:abs(p[27].x-p[28].x)/sw,
+    footOrder:(p[28].x-p[27].x)*(Math.sign(p[24].x-p[23].x)||Math.sign(p[12].x-p[11].x)||1)/sw,
     balance:abs(hips.x-ankles.x)/sw,
     upright:abs(shoulders.x-hips.x)/sw,
     handHeight:hand,
@@ -89,7 +95,7 @@ export function evaluate(assessmentId, pose, calibration, session={}) {
     const value=values[rule.metric]; const [low,high]=rule.range;
     const span=Math.max(high-low,0.1);
     const miss=value<low?low-value:value>high?value-high:0;
-    const score=Math.max(0,Math.round(100-(miss/span)*180));
+    const score=rule.metric==='footOrder'&&value<=0?0:Math.max(0,Math.round(100-(miss/span)*180));
     return { id:rule.id, label:rule.label, value, score, weight:rule.weight, status:score>=80?'good':score>=55?'adjust':'needs work', correction:miss?value<low?rule.low:rule.high:null };
   });
   const score=Math.round(criteria.reduce((n,c)=>n+c.score*c.weight,0)/criteria.reduce((n,c)=>n+c.weight,0));

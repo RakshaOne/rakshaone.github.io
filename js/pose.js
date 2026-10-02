@@ -15,22 +15,26 @@ async function getModel() {
 function xy(ctx,p) {const r=ctx.poseRect;return {x:r.x+p.x*r.w,y:r.y+p.y*r.h}}
 function line(ctx,a,b,color,width=4) { const start=xy(ctx,a),end=xy(ctx,b);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.lineTo(end.x,end.y);ctx.stroke(); }
 function dot(ctx,p,color,r=5) { const at=xy(ctx,p);ctx.fillStyle=color;ctx.beginPath();ctx.arc(at.x,at.y,r,0,Math.PI*2);ctx.fill(); }
-function targetPose(p,id,calibration) {
+export function targetPose(p,id,calibration) {
   const q=p.map(v=>({...v}));
   const sw=calibration?.shoulderWidth||Math.abs(p[11].x-p[12].x)||0.15;
   const bh=calibration?.bodyHeight||0.6;
   const midX=(p[23].x+p[24].x)/2;
+  const side=Math.sign(p[24].x-p[23].x)||Math.sign(p[12].x-p[11].x)||1;
   if (id==='ready_stance'||id==='open_guard'||id==='head_cover'||id==='side_step'||id==='guard_step') {
-    q[27]={...q[27],x:midX-sw*0.63}; q[28]={...q[28],x:midX+sw*0.63};
+    q[27]={...q[27],x:midX-side*sw*0.63};
+    q[28]={...q[28],x:midX+side*sw*0.63};
+    q[25]={...q[25],x:(p[23].x+q[27].x)/2,y:(p[23].y+q[27].y)/2};
+    q[26]={...q[26],x:(p[24].x+q[28].x)/2,y:(p[24].y+q[28].y)/2};
   }
   if (id==='open_guard'||id==='guard_step') {
-    q[15]={...q[15],x:p[11].x-sw*0.33,y:p[11].y+bh*0.04};
-    q[16]={...q[16],x:p[12].x+sw*0.33,y:p[12].y+bh*0.04};
-    q[13]={...q[13],x:p[11].x-sw*0.15,y:(p[11].y+p[23].y)/2};
-    q[14]={...q[14],x:p[12].x+sw*0.15,y:(p[12].y+p[24].y)/2};
+    q[15]={...q[15],x:p[11].x-side*sw*0.33,y:p[11].y+bh*0.04};
+    q[16]={...q[16],x:p[12].x+side*sw*0.33,y:p[12].y+bh*0.04};
+    q[13]={...q[13],x:p[11].x-side*sw*0.15,y:(p[11].y+p[23].y)/2};
+    q[14]={...q[14],x:p[12].x+side*sw*0.15,y:(p[12].y+p[24].y)/2};
   }
   if (id==='head_cover') {
-    q[15]={...q[15],x:p[7].x-sw*0.16,y:p[7].y};q[16]={...q[16],x:p[8].x+sw*0.16,y:p[8].y};
+    q[15]={...q[15],x:p[7].x-side*sw*0.16,y:p[7].y};q[16]={...q[16],x:p[8].x+side*sw*0.16,y:p[8].y};
   }
   return q;
 }
@@ -52,7 +56,7 @@ export function renderPoseFrame(canvas,video,pose,assessmentId,calibration,resul
   const stateFor=(a,b)=>{
     const lower=[23,24,25,26,27,28].includes(a)||[23,24,25,26,27,28].includes(b);
     const upper=[13,14,15,16].includes(a)||[13,14,15,16].includes(b);
-    const key=lower?['width','base','center','travel','recovery']:upper?['hands','elbows','cover']:['upright'];
+    const key=lower?['width','base','feet','center','travel','recovery']:upper?['hands','elbows','cover']:['upright'];
     return key.some(k=>bad.has(k))?'#fa8275':key.some(k=>adjust.has(k))?'#ffd08a':'#8be3ba';
   };
   for(const [a,b] of BONES) if((pose[a].visibility??0)>.45&&(pose[b].visibility??0)>.45) line(ctx,pose[a],pose[b],stateFor(a,b),5);

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { lessons, units } from '../js/curriculum.js';
 import { ASSESSMENTS, evaluate, visibility, updateMovement, calibrationMetrics } from '../js/assessment.js';
+import { targetPose } from '../js/pose.js';
 
 const base=()=>{
   const p=Array.from({length:33},()=>({x:.5,y:.5,z:0,visibility:.99}));
@@ -34,6 +35,26 @@ assert.equal(lessons.find(x=>x.id==='foundations.priority').id,[...lessons].reve
 assert.equal(visibility(p,'ready_stance').ok,true);
 assert.ok(evaluate('ready_stance',p,calibration).score>=80);
 assert.ok(evaluate('open_guard',p,calibration).score>=80);
+const mirrored=base().map(point=>({...point,x:1-point.x}));
+const mirroredCalibration=calibrationMetrics(mirrored,mirrored,960,720);
+assert.ok(evaluate('ready_stance',mirrored,mirroredCalibration).score>=80);
+for(const pose of [p,mirrored]){
+  const hipOrder=Math.sign(pose[24].x-pose[23].x);
+  for(const id of Object.keys(ASSESSMENTS)){
+    const guide=targetPose(pose,id,calibration);
+    assert.ok((guide[28].x-guide[27].x)*hipOrder>0);
+    assert.ok((guide[26].x-guide[25].x)*hipOrder>0);
+    if(id==='open_guard'||id==='guard_step'||id==='head_cover')assert.ok((guide[16].x-guide[15].x)*hipOrder>0);
+  }
+}
+const crossed=base();
+const leftAnkle=crossed[27].x;
+crossed[27].x=crossed[28].x;crossed[28].x=leftAnkle;
+for(const id of Object.keys(ASSESSMENTS)){
+  const result=evaluate(id,crossed,calibration,{phase:'settle',peakTravel:1,recovery:0});
+  assert.ok(result.score<80,`${id} accepted crossed feet`);
+  assert.ok(result.corrections.some(cue=>cue.includes('Uncross')));
+}
 const cover=base();cover[15].x=.42;cover[15].y=.18;cover[16].x=.58;cover[16].y=.18;
 assert.ok(evaluate('head_cover',cover,calibration).score>=80);
 const narrow=base();narrow[27].x=.49;narrow[28].x=.51;
