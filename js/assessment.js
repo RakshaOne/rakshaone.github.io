@@ -23,6 +23,12 @@ export const ASSESSMENTS = {
     { id:'center', label:'Balance', metric:'balance', range:[0,0.7], weight:2, high:'Bring your weight back over your feet.' },
     { id:'travel', label:'Clear step', metric:'travel', range:[0.35,2.8], weight:3, low:'Take one clear side step into your open space.' },
     { id:'recovery', label:'Recovery', metric:'recovery', range:[0,0.6], weight:2, high:'Return to a balanced ready position.' }
+  ]},
+  guard_step: { title:'Open hands, then move', view:'Face the camera with both hands and feet visible.', kind:'dynamic', target:'Raise open hands, take one side step, and settle with balance.', movement:'horizontal', criteria:[
+    { id:'hands', label:'Open-hand position', metric:'handHeight', range:[-0.12,0.24], weight:3, low:'Lower your hands enough to keep a clear view.', high:'Raise your open hands toward your upper chest.' },
+    { id:'base', label:'Stable base', metric:'stanceWidth', range:[0.65,2.0], weight:2, low:'Keep a little space between your feet.', high:'Bring your feet slightly closer.' },
+    { id:'travel', label:'Side step', metric:'travel', range:[0.35,2.8], weight:3, low:'Take one clear step toward your open side.' },
+    { id:'recovery', label:'Balanced finish', metric:'recovery', range:[0,0.6], weight:2, high:'Settle with your head above your feet.' }
   ]}
 };
 
@@ -31,7 +37,7 @@ const dist = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
 const abs = Math.abs;
 export function requiredLandmarks(assessmentId) {
   const common = [11,12,23,24,27,28];
-  if (assessmentId === 'open_guard') return [...common,13,14,15,16];
+  if (assessmentId === 'open_guard' || assessmentId === 'guard_step') return [...common,13,14,15,16];
   if (assessmentId === 'head_cover') return [...common,7,8,15,16];
   return common;
 }

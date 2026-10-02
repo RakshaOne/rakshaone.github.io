@@ -20,10 +20,10 @@ function targetPose(p,id,calibration) {
   const sw=calibration?.shoulderWidth||Math.abs(p[11].x-p[12].x)||0.15;
   const bh=calibration?.bodyHeight||0.6;
   const midX=(p[23].x+p[24].x)/2;
-  if (id==='ready_stance'||id==='open_guard'||id==='head_cover'||id==='side_step') {
+  if (id==='ready_stance'||id==='open_guard'||id==='head_cover'||id==='side_step'||id==='guard_step') {
     q[27]={...q[27],x:midX-sw*0.63}; q[28]={...q[28],x:midX+sw*0.63};
   }
-  if (id==='open_guard') {
+  if (id==='open_guard'||id==='guard_step') {
     q[15]={...q[15],x:p[11].x-sw*0.33,y:p[11].y+bh*0.04};
     q[16]={...q[16],x:p[12].x+sw*0.33,y:p[12].y+bh*0.04};
     q[13]={...q[13],x:p[11].x-sw*0.15,y:(p[11].y+p[23].y)/2};

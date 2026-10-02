@@ -14,8 +14,21 @@ const p=base(),calibration=calibrationMetrics(p,p,960,720);
 assert.equal(units.length,8);
 assert.equal(lessons.length,40);
 assert.equal(new Set(lessons.map(x=>x.id)).size,40);
+const publishedIds={
+  foundations:'priority support instinct boundary planning',
+  awareness:'scan position route followed transport',
+  voice:'boundaries deescalate callhelp online after',
+  movement:'ready distance stepback angle run',
+  position:'guard head fall rise breath',
+  contact:'grip clothing space limits after',
+  scenarios:'street party transit school home',
+  review:'checkin mix plan uncertainty next'
+};
+const expectedIds=Object.entries(publishedIds).flatMap(([unit,names])=>names.split(' ').map(name=>unit+'.'+name));
+assert.deepEqual(lessons.map(x=>x.id).sort(),expectedIds.sort());
 assert.equal(lessons.every(x=>x.blocks.some(b=>b.type==='choice')&&x.blocks.some(b=>b.type==='practice')),true);
-assert.equal(lessons.filter(x=>x.assessmentId).length,4);
+assert.equal(lessons.filter(x=>x.assessmentId).length,9);
+assert.equal(units[1].id,'movement');
 assert.equal(lessons.every(x=>!x.assessmentId||ASSESSMENTS[x.assessmentId]),true);
 assert.equal(lessons.find(x=>x.id==='foundations.priority').id,[...lessons].reverse().find(x=>x.id==='foundations.priority').id);
 assert.equal(visibility(p,'ready_stance').ok,true);
@@ -34,4 +47,7 @@ const moved=base();for(const i of [11,12,23,24,25,26,27,28])moved[i].x+=.09;
 updateMovement(session,moved,calibration);
 assert.equal(session.phase,'settle');
 assert.ok(evaluate('side_step',moved,calibration,session).score>=80);
+assert.ok(evaluate('guard_step',moved,calibration,session).score>=80);
+const handsHidden=base();handsHidden[15].visibility=.1;
+assert.equal(evaluate('guard_step',handsHidden,calibration,session).valid,false);
 console.log('Curriculum, visibility, static rules, dynamic phase, and feedback passed.');

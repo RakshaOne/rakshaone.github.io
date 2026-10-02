@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { lessons } from '../js/curriculum.js';
-import { lessonBlocks, savePlace, readPlace, clearPlace, resumeLesson, lessonReward } from '../js/experience.js';
+import { lessonBlocks, savePlace, readPlace, clearPlace, resumeLesson, lessonReward, hasPassedDecision } from '../js/experience.js';
 
 const data = new Map();
 globalThis.localStorage = {
@@ -14,6 +14,13 @@ const blocks = lessonBlocks(cameraLesson);
 const cameraIndex = blocks.findIndex(block => block.id === 'camera-practice');
 assert.equal(blocks[cameraIndex + 1].type, 'choice');
 assert.equal(cameraLesson.blocks.some(block => block.id === 'camera-practice'), false);
+const scenarioCamera=lessons.find(item=>item.id==='scenarios.street');
+const scenarioBlocks=lessonBlocks(scenarioCamera);
+assert.equal(scenarioBlocks.at(-2).type,'camera');
+assert.equal(scenarioBlocks.at(-1).type,'choice');
+assert.equal(scenarioCamera.blocks[0].type,'choice');
+assert.equal(hasPassedDecision([],scenarioCamera),false);
+assert.equal(hasPassedDecision([{lesson_id:scenarioCamera.id,exercise_id:scenarioCamera.id+'.check',kind:'quiz',passed:true}],scenarioCamera),true);
 
 savePlace('learner-a', cameraLesson, 'camera-practice');
 assert.equal(readPlace('learner-a', cameraLesson), cameraIndex);

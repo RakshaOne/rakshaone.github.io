@@ -30,7 +30,9 @@ export function icon(name, size=22) {
 export function lessonBlocks(item) {
   if (!item.assessmentId) return item.blocks;
   const blocks = [...item.blocks];
+  if (blocks[0]?.type === 'choice') blocks.push(blocks.shift());
   const checkIndex = blocks.findIndex(block => block.type === 'choice');
+  if (checkIndex < 0) throw new Error(`Camera lesson ${item.id} needs a decision check.`);
   blocks.splice(checkIndex, 0, { id: 'camera-practice', type: 'camera' });
   return blocks;
 }
@@ -65,4 +67,8 @@ export function lessonReward(old, nextStatus) {
   const firstFinish = !old?.completed_at && ['passed', 'mastered'].includes(nextStatus);
   const masteryEarned = nextStatus === 'mastered' && old?.status !== 'mastered';
   return { firstFinish, masteryEarned, xp: (firstFinish ? 20 : 0) + (masteryEarned ? 10 : 0) };
+}
+
+export function hasPassedDecision(attempts, item) {
+  return attempts.some(attempt => attempt.lesson_id === item.id && attempt.exercise_id === `${item.id}.check` && attempt.kind === 'quiz' && attempt.passed);
 }
