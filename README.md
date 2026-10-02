@@ -11,6 +11,7 @@ The frontend is static vanilla HTML, CSS, and JavaScript. It has no build step. 
 | `index.html`, `styles.css` | App shell and responsive design tokens |
 | `js/curriculum.js` | Versioned units, lessons, and content blocks |
 | `js/app.js` | Routes and reusable lesson, quiz, camera, and account views |
+| `js/experience.js` | Shared icons, lesson-stage continuity, and per-learner resume position |
 | `js/store.js` | Supabase auth client and per-user persistence |
 | `js/assessment.js` | Configured pose rules, visibility, smoothing, and scoring |
 | `js/pose.js` | MediaPipe model, camera lifecycle, live skeleton, and target overlay |
@@ -19,7 +20,7 @@ The frontend is static vanilla HTML, CSS, and JavaScript. It has no build step. 
 
 ## Local development
 
-Run `node tools/serve.mjs` (Node 20 or later) and open `http://127.0.0.1:4173`. If npm is available, `npm run dev` is equivalent. No dependencies need installing. Run `node tests/assessment.test.mjs` (or `npm test`) to check curriculum IDs and key assessment rules. Camera access needs HTTPS or localhost, a supported browser, permission, good light, and a full-body view. If you edit service worker assets, change its cache version to refresh installed clients.
+Run `node tools/serve.mjs` (Node 20 or later) and open `http://127.0.0.1:4173`. If npm is available, `npm run dev` is equivalent. No dependencies need installing. Run `node tests/assessment.test.mjs` and `node tests/experience.test.mjs` (or `npm test`) to check curriculum, assessment rules, and lesson continuity. Camera access needs HTTPS or localhost, a supported browser, permission, good light, and a full-body view. If you edit service worker assets, change its cache version to refresh installed clients.
 
 ## Supabase
 
@@ -45,7 +46,7 @@ Calibration captures a neutral stance and arms-out reference, then stores derive
 
 ## Progress and safety
 
-Statuses distinguish `viewed`, `practiced`, `passed`, and `mastered`. Correct decision checks are required to pass a lesson. Camera mastery requires a supported exercise scoring at least 80 with stable tracking. Camera trouble never blocks curriculum completion. XP, level, streak, daily goal, and badges reward consistency and knowledge rather than speed or confrontation. No public leaderboard is present, so client-reported scores cannot affect other learners.
+Statuses distinguish `viewed`, `practiced`, `passed`, and `mastered`. Correct decision checks are required to pass a lesson. Camera mastery requires a supported exercise scoring at least 80 with stable tracking. Camera trouble never blocks curriculum completion. A first completion earns 20 XP, and first camera mastery adds 10 XP. XP, level, streak, daily goal, and badges reward consistency and knowledge rather than speed or confrontation. No public leaderboard is present, so client-reported scores cannot affect other learners. The visual learning path shows current, available, upcoming, completed, and mastered lessons; all lessons remain accessible. Lesson stage position is stored locally per account and stable lesson ID, while completion and attempts remain in Supabase.
 
 Physical drills should be done gently in clear space. Stop with pain or dizziness. Partner concepts require consent and light pressure. The product is educational and cannot promise safety in a real incident.
 
@@ -54,5 +55,6 @@ Physical drills should be done gently in clear space. Stop with pain or dizzines
 - Browser-verified live sign-up, onboarding, incorrect/correct quiz feedback, lesson completion, XP/streak, session persistence, sign-out, and returning sign-in against the Raksha project.
 - Verified MediaPipe 1.0.1 model initialization through the browser without a camera.
 - `npm test` verifies 40 unique lessons, all lesson interactions, visibility rejection, static criteria, corrective feedback, and dynamic side-step phase scoring.
+- The UX journey was walked at desktop, 390 px, and 320 px widths: account creation, onboarding, lesson steps, quiz feedback, completion, path progress, sign-out/sign-in resume, camera setup entry, and camera failure recovery.
 - Supabase security advisor reported no security findings after schema creation. A role-switched RLS query saw two own progress rows and zero foreign rows.
-- The in-app test browser did not grant camera access, so live webcam calibration, skeleton overlay, and end-to-end assessment could not be physically observed there. The app shows a bounded permission error and keeps the knowledge pathway usable. Recheck those steps on a real webcam/phone before a public launch.
+- The product owner confirmed working calibration and motion tracking on two samples using a real device. The in-app test browser has no usable camera, so this UX pass verified its recovery flow but could not repeat a live pose assessment there.

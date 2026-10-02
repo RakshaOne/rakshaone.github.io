@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.58.0';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { lessonReward } from './experience.js';
 
 export const db = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 export const state = { user: null, profile: null, progress: new Map(), attempts: [], days: [], calibrations: [], loading: true };
@@ -42,8 +43,7 @@ export function saveLesson(lessonId, status, score = null) {
 async function writeLesson(lessonId, status, score = null) {
   const old = state.progress.get(lessonId);
   const nextStatus = old && rank[old.status] > rank[status] ? old.status : status;
-  const firstFinish = !old?.completed_at && rank[nextStatus] >= 3;
-  const xp = firstFinish ? 20 : 0;
+  const { firstFinish, masteryEarned, xp } = lessonReward(old, nextStatus);
   const row = {
     user_id: state.user.id, lesson_id: lessonId, status: nextStatus,
     best_score: score == null ? old?.best_score ?? null : Math.max(score, old?.best_score ?? 0),
@@ -55,8 +55,8 @@ async function writeLesson(lessonId, status, score = null) {
   };
   const { data, error } = await db.from('lesson_progress').upsert(row).select().single(); fail(error);
   state.progress.set(lessonId, data);
-  if (firstFinish) await recordActivity(1, 0, xp);
-  return { row: data, xp };
+  if (xp) await recordActivity(firstFinish ? 1 : 0, 0, xp);
+  return { row: data, xp, masteryEarned };
 }
 
 export async function recordAttempt(lessonId, exerciseId, kind, score, passed, criteria = {}) {
