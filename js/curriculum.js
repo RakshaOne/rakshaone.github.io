@@ -1,5 +1,5 @@
-// Curriculum v2. IDs are permanent; order is only presentation metadata.
-export const CONTENT_VERSION = 2;
+// Curriculum v3. IDs are permanent; order is only presentation metadata.
+export const CONTENT_VERSION = 3;
 const choice = (prompt, options, answer, why) => ({ id: 'check', type: 'choice', prompt, options, answer, why });
 const lesson = (id, title, summary, steps, check, extra = {}) => {
   const scenario = id.startsWith('scenarios.');
@@ -76,18 +76,23 @@ export const units = [
     lesson('review.next', 'Keep learning safely', 'Repeat what helps, practice gently, and get in-person instruction from qualified teachers when possible.', ['Review weak quiz topics.', 'Revisit camera feedback without chasing a perfect score.', 'Keep practicing awareness, boundaries, and help seeking.'], C('What is a healthy goal for practice?', ['Perfect camera scores', 'Safer decisions and controlled movement', 'Risky speed'], 1, 'Learning is about usable habits, not performance for a score.'), {practice:'Choose one skill to revisit this week.'})
   ]}
 ];
-// Repeat a small set of honest, single-person camera checks in new contexts.
-// The camera measures visible posture and movement, never voice, intent, or a partner.
+// Camera activities only assess visible solo motion; words, intent, and partners are never scored.
 const cameraActivities = {
-  'foundations.boundary': ['open_guard', 'Say your short boundary while raising open hands. The camera checks your hand and body position, not your words.'],
+  'foundations.boundary': ['boundary_raise', 'Start with relaxed arms. Say your boundary as you raise both open hands; the camera checks the hand movement, not your words.'],
   'movement.ready': ['ready_stance', 'Find a comfortable base: feet apart, shoulders above hips, and room to move. Hold it for the camera.'],
-  'movement.distance': ['open_guard', 'Raise open hands, then choose a clear route away. The camera checks your balanced open-hand position.'],
-  'movement.angle': ['side_step', 'Start balanced, take one side step into clear space, then settle. The camera follows that short movement.'],
+  'movement.distance': ['guard_step', 'Show open hands, then take one side step away from an imagined person. The camera checks your step and balance.'],
+  'movement.stepback': ['retreat_step', 'Stand still first, then take one controlled step away from the camera into clear space.'],
+  'movement.angle': ['exit_turn', 'Face the camera first, then turn partway toward an imagined exit while keeping your feet uncrossed.'],
+  'awareness.position': ['side_step', 'Choose an open side and take one clear step into it. The camera checks movement, not whether the real room is safe.'],
+  'voice.boundaries': ['boundary_raise', 'Say a one-sentence boundary while you lift open hands from a relaxed position. The camera checks the gesture only.'],
   'position.guard': ['open_guard', 'Lift open hands near your chest without hiding your view. The camera checks your hands, elbows, and balance.'],
-  'position.head': ['head_cover', 'Bring your hands beside your head while keeping your eyes on an exit. Hold a comfortable cover.'],
-  'contact.space': ['guard_step', 'Show open hands and take one controlled side step toward your open route. No partner is needed.'],
-  'scenarios.street': ['guard_step', 'Rehearse a refusal with open hands and one controlled side step. The camera checks posture and movement, not your words.'],
-  'review.mix': ['guard_step', 'Put the pieces together: open hands, one side step, then settle in balance. Say your boundary if comfortable.']
+  'position.head': ['cover_raise', 'Start with relaxed arms, then bring both hands beside your head while keeping your view clear.'],
+  'contact.space': ['guard_step', 'Show open hands and move one step toward your open route. The camera checks solo movement, not contact.'],
+  'scenarios.street': ['boundary_raise', 'Rehearse a short refusal while raising open hands. The camera checks the gesture, not your voice.'],
+  'scenarios.party': ['side_step', 'Imagine a clear gap in a crowd. Take one slow side step toward that opening.'],
+  'scenarios.transit': ['retreat_step', 'Imagine someone closing in. Take one controlled step away from the camera into clear space.'],
+  'scenarios.school': ['exit_turn', 'Imagine a supervised exit at your side. Turn partway toward it without crossing your feet.'],
+  'review.mix': ['guard_step', 'Combine open hands with one deliberate side step, then settle in balance. Say your boundary if comfortable.']
 };
 for (const unit of units) for (const item of unit.lessons) {
   const camera = cameraActivities[item.id];

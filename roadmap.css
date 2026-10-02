@@ -1,0 +1,95 @@
+/* The learning journey has its own canvas. Checkpoints stay in one readable column. */
+.path-layout{max-width:860px}
+.path-overview{gap:var(--space-6)}
+.path-summary{align-items:center}
+.path-summary>span{min-width:0}
+.path-summary>span>.ui-icon{color:var(--brand);flex:none}
+.path-summary>span span{display:grid;gap:2px;min-width:0}
+.path-summary small{font-size:.72rem;font-weight:750;color:var(--muted)}
+.path-summary strong{font:800 1rem/1.2 Outfit,sans-serif}
+.path-summary .btn .ui-icon{color:currentColor;flex:none}
+
+.path-unit{--chapter-bg:#fff7f0;--chapter-accent:#bf5847;--chapter-line:#eac6b5;position:relative;padding:0;overflow:hidden;background:var(--chapter-bg);border-color:var(--chapter-line);box-shadow:0 10px 28px rgba(72,43,29,.05)}
+.path-unit.unit-movement{--chapter-bg:#f9eee6;--chapter-accent:#ae6543;--chapter-line:#e6c8b7}
+.path-unit.unit-awareness{--chapter-bg:#f1f4ee;--chapter-accent:#60806a;--chapter-line:#d0dfd0}
+.path-unit.unit-voice{--chapter-bg:#f9f0ec;--chapter-accent:#a65c63;--chapter-line:#ebced0}
+.path-unit.unit-position{--chapter-bg:#eef3ef;--chapter-accent:#567a70;--chapter-line:#cadcd4}
+.path-unit.unit-contact{--chapter-bg:#f8eee7;--chapter-accent:#ad654b;--chapter-line:#e8cab9}
+.path-unit.unit-scenarios{--chapter-bg:#f5f1e9;--chapter-accent:#897354;--chapter-line:#e1d4be}
+.path-unit.unit-review{--chapter-bg:#fff5e5;--chapter-accent:#a97736;--chapter-line:#ead7af}
+.path-unit .chapter-landscape{position:absolute;top:0;right:0;width:48%;height:150px;overflow:hidden;opacity:.72;pointer-events:none}
+.chapter-landscape i{position:absolute;display:block;border:2px solid var(--chapter-line);border-radius:50%;transform:rotate(-20deg)}
+.chapter-landscape i:first-child{width:260px;height:190px;right:-110px;top:-128px;background:color-mix(in srgb,var(--chapter-accent) 10%,transparent)}
+.chapter-landscape i:nth-child(2){width:200px;height:155px;right:-60px;top:-94px}
+.chapter-landscape i:last-child{width:110px;height:110px;right:24px;top:-60px;border-width:1px}
+.path-unit .path-unit-heading{position:relative;z-index:1;padding:24px 28px 22px;border-bottom:1px solid var(--chapter-line)}
+.path-unit .unit-emblem{background:color-mix(in srgb,var(--chapter-accent) 15%,white);color:var(--chapter-accent);border:1px solid var(--chapter-line)}
+.path-unit .unit-count{background:color-mix(in srgb,var(--chapter-accent) 12%,white);color:var(--chapter-accent)}
+.path-unit .path-unit-title .eyebrow{color:var(--chapter-accent)}
+.path-unit .path-nodes{--rail-width:88px;--node-size:58px;position:relative;display:block;gap:0;padding:16px 24px 20px}
+.path-unit .path-nodes:before{content:none}
+.roadmap-spine{position:absolute;left:24px;top:16px;width:var(--rail-width);pointer-events:none;overflow:visible}
+.roadmap-spine path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.roadmap-track{stroke:var(--chapter-line);stroke-width:10}
+.roadmap-complete{stroke:var(--chapter-accent);stroke-width:10;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--drawn));transition:stroke-dashoffset 700ms var(--ease-out)}
+.path-unit .path-node{position:relative;display:block;width:100%;height:108px;min-height:0;margin:0;padding:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none}
+.path-unit .path-node:hover,.path-unit .path-node:active{background:none;border:0;box-shadow:none;transform:none}
+.checkpoint{position:absolute;left:calc(var(--rail-width) * var(--waypoint) - var(--node-size) / 2);top:calc(50% - var(--node-size) / 2);z-index:2;display:grid;place-items:center;width:var(--node-size);height:var(--node-size);border:3px solid var(--chapter-line);border-radius:50%;background:#fffdfa;color:var(--chapter-accent);box-shadow:0 4px 0 rgba(72,43,29,.09);transition:transform var(--duration-medium) var(--ease-out),background var(--duration-medium),box-shadow var(--duration-medium)}
+.checkpoint-copy{position:absolute;left:calc(var(--rail-width) + 14px);right:0;top:50%;transform:translateY(-50%);display:grid;gap:3px;min-height:78px;align-content:center;padding:12px 18px;border:1px solid var(--chapter-line);border-radius:var(--radius-md);background:#fffdfa;box-shadow:0 3px 13px rgba(72,43,29,.035);transition:border-color var(--duration-medium),box-shadow var(--duration-medium),transform var(--duration-medium) var(--ease-out)}
+.checkpoint-copy small{color:var(--muted);font-size:.72rem;font-weight:750;line-height:1.2}
+.checkpoint-copy strong{font:800 1.08rem/1.2 Outfit,sans-serif}
+.checkpoint-copy em{color:var(--chapter-accent);font-size:.75rem;font-style:normal;font-weight:800}
+.path-unit .path-node:hover .checkpoint{transform:scale(1.06)}
+.path-unit .path-node:hover .checkpoint-copy{transform:translateY(calc(-50% - 2px));box-shadow:0 8px 20px rgba(72,43,29,.09);border-color:var(--chapter-accent)}
+.path-unit .path-node:active .checkpoint{transform:scale(.96)}
+.path-unit .path-node:focus-visible{outline:0}
+.path-unit .path-node:focus-visible .checkpoint-copy{outline:3px solid var(--focus);outline-offset:2px}
+.path-unit .path-node.current .checkpoint{background:var(--chapter-accent);border-color:#fffdfa;color:white;box-shadow:0 0 0 5px color-mix(in srgb,var(--chapter-accent) 22%,transparent),0 5px 0 rgba(72,43,29,.12)}
+.path-unit .path-node.current .checkpoint-copy{border:2px solid var(--chapter-accent);background:#fffdfa;box-shadow:0 8px 24px rgba(72,43,29,.11)}
+.path-unit .path-node.completed .checkpoint{background:#e5f3e8;color:var(--good);border-color:#a9d0b7}
+.path-unit .path-node.completed .checkpoint-copy em{color:var(--good)}
+.path-unit .path-node.mastered .checkpoint{background:#f8e3b4;border-color:#d2a95c;color:#815817}
+.path-unit .path-node.mastered .checkpoint-copy{border-color:#d6b675;background:#fffaf0}
+.path-unit .path-node.mastered .checkpoint-copy em{color:#815817}
+.path-unit .path-node.upcoming .checkpoint{background:#f3f0ec;color:#817872;border-color:#ded5cd}
+.path-unit .path-node.upcoming .checkpoint-copy{background:#fcfaf7;border-color:#e4dad1;box-shadow:none}
+.path-unit .path-node.upcoming .checkpoint-copy em{color:#817872}
+.path-unit .path-node.milestone .checkpoint{border-width:4px}
+.path-unit.compact{padding:0}
+.path-unit.compact .path-node{height:108px;min-height:0}
+
+.future-unit{position:relative;display:flex;align-items:center;gap:20px;min-height:155px;padding:24px 28px 24px 50px;border:1px dashed #dcc9b9;border-radius:var(--radius-xl);background:#fbf8f4;color:var(--muted)}
+.future-trail{position:absolute;left:38px;top:-25px;height:54px;border-left:4px dashed #e4cbbb}
+.future-emblem{z-index:1;display:grid;place-items:center;flex:none;width:58px;height:58px;border:2px solid #ddc9b9;border-radius:50%;background:#f3eae2;color:#93735f}
+.future-unit h2{margin:5px 0;font-size:1.55rem;color:var(--ink)}
+.future-unit p{margin:0;max-width:48ch;font-size:.9rem}
+
+.activity-cue{display:flex;align-items:start;gap:10px;margin-top:var(--space-5);padding:var(--space-4);border-radius:var(--radius-md);background:#f3f4eb;color:#426c57;font-weight:700;line-height:1.4}
+.activity-cue .ui-icon{flex:none}
+.movement-demo{margin-top:var(--space-5);border:1px solid var(--line);border-radius:var(--radius-md);background:#fffdfa;padding:var(--space-3) var(--space-4)}
+.movement-demo summary{cursor:pointer;font-weight:800;color:var(--brand-dark)}
+.movement-demo .demo-wrap{margin-top:var(--space-4)}
+
+@media(max-width:650px){
+  .path-unit .path-unit-heading{padding:18px 16px 16px}
+  .path-unit .path-nodes{--rail-width:64px;--node-size:46px;padding:12px 12px 16px}
+  .roadmap-spine{left:12px;top:12px}
+  .path-unit .path-node{height:108px;min-height:0;padding:0;gap:0}
+  .checkpoint{border-width:2px}
+  .checkpoint .ui-icon{width:21px;height:21px}
+  .checkpoint-copy{left:calc(var(--rail-width) + 10px);min-height:80px;padding:10px 12px}
+  .checkpoint-copy small{font-size:.66rem}
+  .checkpoint-copy strong{font-size:.96rem}
+  .checkpoint-copy em{font-size:.7rem}
+  .future-unit{gap:13px;min-height:140px;padding:20px 16px}
+  .future-trail{left:28px}
+  .future-emblem{width:46px;height:46px}
+  .future-unit h2{font-size:1.25rem}
+}
+@media(max-width:380px){
+  .path-unit .path-unit-heading{grid-template-columns:40px minmax(0,1fr)}
+  .path-unit .unit-count{grid-column:2}
+  .checkpoint-copy{padding:9px 10px}
+  .checkpoint-copy strong{font-size:.9rem}
+}
+@media(prefers-reduced-motion:reduce){.roadmap-complete,.checkpoint,.checkpoint-copy{transition:none}}

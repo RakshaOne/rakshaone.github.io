@@ -28,13 +28,19 @@ export function icon(name, size=22) {
 }
 
 export function lessonBlocks(item) {
-  if (!item.assessmentId) return item.blocks;
-  const blocks = [...item.blocks];
-  if (blocks[0]?.type === 'choice') blocks.push(blocks.shift());
-  const checkIndex = blocks.findIndex(block => block.type === 'choice');
-  if (checkIndex < 0) throw new Error(`Camera lesson ${item.id} needs a decision check.`);
-  blocks.splice(checkIndex, 0, { id: 'camera-practice', type: 'camera' });
-  return blocks;
+  const check=item.blocks.find(block=>block.type==='choice');
+  const steps=item.blocks.find(block=>block.type==='steps');
+  if(!check||!steps)throw new Error(`Lesson ${item.id} needs a decision and practical steps.`);
+  if(item.assessmentId){
+    return [
+      {id:'activity-intro',type:'activity-intro',summary:item.summary,steps:steps.items,demo:item.blocks.find(block=>block.type==='demonstration'),cues:item.blocks.find(block=>block.type==='cues')},
+      {id:'camera-practice',type:'camera'},
+      check
+    ];
+  }
+  const practice=item.blocks.find(block=>block.type==='practice');
+  if(!practice)throw new Error(`Lesson ${item.id} needs a practice activity.`);
+  return [check,{id:'insight',type:'insight',summary:item.summary,steps:steps.items},practice];
 }
 
 const placeKey = (userId, lessonId) => `rakshaone:place:${userId}:${lessonId}`;
@@ -46,7 +52,12 @@ export function savePlace(userId, item, blockId) {
 }
 export function readPlace(userId, item) {
   const blockId = localStorage.getItem(placeKey(userId, item.id));
-  return Math.max(0, lessonBlocks(item).findIndex(block => block.id === blockId));
+  const blocks=lessonBlocks(item);
+  const index=blocks.findIndex(block=>block.id===blockId);
+  if(index>=0)return index;
+  if(['idea','method','show','cues','map'].includes(blockId))return blocks.findIndex(block=>['insight','activity-intro'].includes(block.id));
+  if(blockId==='practice'&&item.assessmentId)return blocks.findIndex(block=>block.id==='camera-practice');
+  return 0;
 }
 export function clearPlace(userId, item) {
   if (!userId) return;
@@ -56,8 +67,9 @@ export function clearPlace(userId, item) {
 export function resumeLesson(userId, items, progress) {
   const recent = items.find(item => item.id === localStorage.getItem(recentKey(userId)));
   const done = item => ['passed','mastered'].includes(progress.get(item.id)?.status);
-  if (recent && !done(recent)) return recent;
-  const inProgress = items.filter(item => !done(item) && readPlace(userId, item) > 0)
+  const started=item=>readPlace(userId,item)>0||progress.get(item.id)?.status==='practiced';
+  if (recent && !done(recent) && started(recent)) return recent;
+  const inProgress = items.filter(item => !done(item) && started(item))
     .sort((a, b) => (progress.get(b.id)?.updated_at || '').localeCompare(progress.get(a.id)?.updated_at || ''));
   if (inProgress.length) return inProgress[0];
   return items.find(item => !done(item)) || items.at(-1);

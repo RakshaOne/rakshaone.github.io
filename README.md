@@ -1,6 +1,6 @@
 # RakshaOne
 
-RakshaOne is a solo-first personal safety learning app. It teaches awareness, boundaries, de-escalation, movement, escape, and help seeking through 40 short lessons in eight units. Nine lessons use five conservative, single-person MediaPipe checks for optional, private camera practice. The goal is to **avoid → de-escalate → create distance → escape → get help**; no technique guarantees safety.
+RakshaOne is a solo-first personal safety learning app. It teaches awareness, boundaries, de-escalation, movement, escape, and help seeking through 40 short lessons in eight units. Fifteen lessons use nine single-person MediaPipe checks for private camera practice, including distinct hand, foot, retreat, turn, cover, and stance activities. The goal is **avoid → de-escalate → create distance → escape → get help**; no technique guarantees safety.
 
 ## Architecture
 
@@ -8,10 +8,11 @@ The frontend is static vanilla HTML, CSS, and JavaScript. It has no build step. 
 
 | File | Responsibility |
 | --- | --- |
-| `index.html`, `styles.css` | App shell and responsive design tokens |
+| `index.html`, `styles.css`, `roadmap.css` | App shell, responsive design tokens, and visual learning path |
 | `js/curriculum.js` | Versioned units, lessons, and content blocks |
 | `js/app.js` | Routes and reusable lesson, quiz, camera, and account views |
 | `js/experience.js` | Shared icons, lesson-stage continuity, and per-learner resume position |
+| `js/roadmap.js` | Responsive unit environments and smooth checkpoint paths |
 | `js/camera-flow.js` | Hands-free hold gates for calibration and assessment |
 | `js/store.js` | Supabase auth client and per-user persistence |
 | `js/assessment.js` | Configured pose rules, visibility, smoothing, and scoring |
@@ -21,7 +22,7 @@ The frontend is static vanilla HTML, CSS, and JavaScript. It has no build step. 
 
 ## Local development
 
-Run `node tools/serve.mjs` (Node 20 or later) and open `http://127.0.0.1:4173`. If npm is available, `npm run dev` is equivalent. No dependencies need installing. Run `node tests/assessment.test.mjs`, `node tests/experience.test.mjs`, and `node tests/camera-flow.test.mjs` (or `npm test`) to check curriculum, assessment rules, lesson continuity, and automatic capture gates. Camera access needs HTTPS or localhost, a supported browser, permission, good light, and a full-body view. If you edit service worker assets, change its cache version to refresh installed clients.
+Run `node tools/serve.mjs` (Node 20 or later) and open `http://127.0.0.1:4173`. If npm is available, `npm run dev` is equivalent. No dependencies need installing. Run `npm test` to check curriculum, assessment rules, lesson continuity, automatic capture gates, and roadmap geometry. Camera access needs HTTPS or localhost, a supported browser, permission, good light, and a full-body view. If you edit service worker assets, change its cache version to refresh installed clients.
 
 ## Supabase
 
@@ -39,9 +40,9 @@ The supplied logo remains the brand source. The two manifest icons in `assets/ic
 
 `js/curriculum.js` declares each unit with an immutable `id`, title, subtitle, and lesson list. Lesson IDs are independent of ordering; progress rows use `lesson_id`, so reordering or inserting content does not change existing completion. Never rename a published ID. `unitOrder` controls the syllabus sequence. Increment `CONTENT_VERSION` when changing content structure.
 
-To add a lesson, call the `lesson(...)` helper with a stable ID, a clear objective, practical steps, a plausible choice with a correct answer and explanation, and a specific solo activity. Scenario lessons start with a decision; other lessons build toward it. The reusable renderer supports `explanation`, `demonstration`, `steps`, `cues`, `visual`, `practice`, and `choice` blocks. It omits the old repeated recap. For physical lessons, add manual demonstration stages (`demo`) and specific helpful/common-mistake cues. A new unit is an entry in `units` with its own immutable ID and lessons. The engine records attempts separately from completion.
+To add a lesson, call the `lesson(...)` helper with a stable ID, a clear objective, practical steps, a plausible choice with a correct answer and explanation, and a specific solo activity. Learners see a focused three-stage sequence: camera lessons introduce one movement, guide the camera activity, then check the decision behind it; other lessons lead with a decision, follow with the takeaway, then prompt a short practice. Existing content blocks remain available to the renderer for demonstrations and context. A new unit is an entry in `units` with its own immutable ID and lessons. The engine records attempts separately from completion.
 
-For a camera-supported lesson, assign an `assessmentId` from `ASSESSMENTS` in `js/assessment.js` and a specific `cameraPrompt`. Existing camera activities are grouped in `cameraActivities` so the same visible skill can be applied in different contexts. Define only single-person, visible movements. Each criterion declares a metric, broad accepted range, weight, and specific corrective cue. The evaluator rejects low-visibility poses, normalizes measurements using this device's calibration, smooths landmarks over time, and returns weighted criterion scores. Dynamic side-step and guard-step practice track movement phase and recovery. The target skeleton is an approximate alignment guide, not an exact anatomical prescription. Partner contact is deliberately never camera-scored.
+For a camera-supported lesson, assign an `assessmentId` from `ASSESSMENTS` in `js/assessment.js` and a specific `cameraPrompt`. Define only single-person, visible movements. Each criterion declares a metric, accepted range, weight, and corrective cue. The evaluator rejects low-visibility poses, normalizes measurements using this device's calibration, smooths landmarks over time, and returns weighted criterion scores. Dynamic activities require a steady start, observable movement, and a stable finish before the hands-free capture hold begins. The target skeleton is an approximate alignment guide, not an exact anatomical prescription. Partner contact is never camera-scored.
 
 Calibration captures a neutral stance and arms-out reference after a steady, visible hold, then stores derived proportions, framing, quality, device class, and an anonymous local device ID. A manual capture fallback remains available. A camera assessment saves automatically after a three-second stable pass, so learners need not walk back to touch the device. Mobile and desktop profiles are separate. Recalibration and deletion are available in Settings. Camera video is never uploaded.
 
@@ -55,7 +56,7 @@ Physical drills should be done gently in clear space. Stop with pain or dizzines
 
 - Browser-verified live sign-up, onboarding, incorrect/correct quiz feedback, lesson completion, XP/streak, session persistence, sign-out, and returning sign-in against the Raksha project.
 - Verified MediaPipe 1.0.1 model initialization through the browser without a camera.
-- `npm test` verifies 40 unique lessons, nine camera activities, visibility rejection, static criteria, corrective feedback, dynamic side-step and guard-step scoring, lesson position, and no-touch capture timing.
+- `npm test` verifies 40 unique lessons, fifteen camera lessons with nine activity types, visibility rejection, distinct dynamic movement scoring, lesson position, no-touch capture timing, and roadmap geometry.
 - The UX journey was walked at desktop, 390 px, and 320 px widths: account creation, onboarding, lesson steps, quiz feedback, completion, path progress, sign-out/sign-in resume, camera setup entry, and camera failure recovery.
 - Supabase security advisor reported no security findings after schema creation. A role-switched RLS query saw two own progress rows and zero foreign rows.
 - The product owner confirmed working calibration and motion tracking on two samples using a real device. The in-app test browser has no usable camera, so this UX pass verified its recovery flow but could not repeat a live pose assessment there.

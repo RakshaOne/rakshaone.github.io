@@ -21,19 +21,19 @@ export function targetPose(p,id,calibration) {
   const bh=calibration?.bodyHeight||0.6;
   const midX=(p[23].x+p[24].x)/2;
   const side=Math.sign(p[24].x-p[23].x)||Math.sign(p[12].x-p[11].x)||1;
-  if (id==='ready_stance'||id==='open_guard'||id==='head_cover'||id==='side_step'||id==='guard_step') {
+  if (['ready_stance','open_guard','head_cover','side_step','guard_step','boundary_raise','retreat_step','exit_turn','cover_raise'].includes(id)) {
     q[27]={...q[27],x:midX-side*sw*0.63};
     q[28]={...q[28],x:midX+side*sw*0.63};
     q[25]={...q[25],x:(p[23].x+q[27].x)/2,y:(p[23].y+q[27].y)/2};
     q[26]={...q[26],x:(p[24].x+q[28].x)/2,y:(p[24].y+q[28].y)/2};
   }
-  if (id==='open_guard'||id==='guard_step') {
+  if (id==='open_guard'||id==='guard_step'||id==='boundary_raise') {
     q[15]={...q[15],x:p[11].x-side*sw*0.33,y:p[11].y+bh*0.04};
     q[16]={...q[16],x:p[12].x+side*sw*0.33,y:p[12].y+bh*0.04};
     q[13]={...q[13],x:p[11].x-side*sw*0.15,y:(p[11].y+p[23].y)/2};
     q[14]={...q[14],x:p[12].x+side*sw*0.15,y:(p[12].y+p[24].y)/2};
   }
-  if (id==='head_cover') {
+  if (id==='head_cover'||id==='cover_raise') {
     q[15]={...q[15],x:p[7].x-side*sw*0.16,y:p[7].y};q[16]={...q[16],x:p[8].x+side*sw*0.16,y:p[8].y};
   }
   return q;
@@ -91,7 +91,7 @@ export async function startPose({video,canvas,onFrame,onStatus,assessmentId=null
         const poses=model.detectForVideo(video,now).landmarks;
         controller.pose=poses?.length?smoothPose(controller.pose,poses[0]):null;
         const seen=visibility(controller.pose,assessmentId);
-        if (assessmentId && seen.ok && ASSESSMENTS[assessmentId].kind==='dynamic') updateMovement(controller.session,controller.pose,calibration);
+        if (assessmentId && seen.ok && ASSESSMENTS[assessmentId].kind==='dynamic') updateMovement(controller.session,controller.pose,calibration,assessmentId,now);
         const result=assessmentId?evaluate(assessmentId,controller.pose,calibration,controller.session):null;
         renderPoseFrame(canvas,video,controller.pose,assessmentId,calibration,result);
         onFrame({pose:controller.pose,visibility:seen,result,session:controller.session,video});

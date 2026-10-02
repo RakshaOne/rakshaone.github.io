@@ -11,6 +11,7 @@ globalThis.localStorage = {
 
 const cameraLesson = lessons.find(item => item.assessmentId);
 const blocks = lessonBlocks(cameraLesson);
+assert.deepEqual(blocks.map(block=>block.type),['activity-intro','camera','choice']);
 const cameraIndex = blocks.findIndex(block => block.id === 'camera-practice');
 assert.equal(blocks[cameraIndex + 1].type, 'choice');
 assert.equal(cameraLesson.blocks.some(block => block.id === 'camera-practice'), false);
@@ -19,6 +20,8 @@ const scenarioBlocks=lessonBlocks(scenarioCamera);
 assert.equal(scenarioBlocks.at(-2).type,'camera');
 assert.equal(scenarioBlocks.at(-1).type,'choice');
 assert.equal(scenarioCamera.blocks[0].type,'choice');
+const decisionLesson=lessons.find(item=>!item.assessmentId);
+assert.deepEqual(lessonBlocks(decisionLesson).map(block=>block.type),['choice','insight','practice']);
 assert.equal(hasPassedDecision([],scenarioCamera),false);
 assert.equal(hasPassedDecision([{lesson_id:scenarioCamera.id,exercise_id:scenarioCamera.id+'.check',kind:'quiz',passed:true}],scenarioCamera),true);
 
