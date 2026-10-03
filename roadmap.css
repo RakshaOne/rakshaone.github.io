@@ -69,8 +69,27 @@
 .movement-demo{margin-top:var(--space-5);border:1px solid var(--line);border-radius:var(--radius-md);background:#fffdfa;padding:var(--space-3) var(--space-4)}
 .movement-demo summary{cursor:pointer;font-weight:800;color:var(--brand-dark)}
 .movement-demo .demo-wrap{margin-top:var(--space-4)}
+.motion-study{display:grid;grid-template-columns:minmax(180px,44%) 1fr;gap:clamp(14px,3vw,28px);align-items:center;margin:var(--space-5) 0;padding:16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:#fffaf5}
+.motion-art{display:grid;place-items:center;min-height:260px;overflow:hidden;border-radius:var(--radius-md);background:radial-gradient(circle at 50% 72%,#f8eee5,#f4e9df 74%)}
+.motion-art img{display:block;width:min(100%,295px);height:auto;aspect-ratio:430/370;object-fit:contain;animation:motion-stage-in 220ms var(--ease-out)}
+.motion-copy h3{margin:8px 0 5px;font:800 clamp(1.2rem,2vw,1.6rem)/1.15 Outfit,sans-serif}
+.motion-copy p{margin:0;color:var(--muted);line-height:1.45}
+.motion-tabs{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
+.motion-tab{min-height:44px;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:#fff;color:var(--ink);font:750 .78rem/1.2 'DM Sans',sans-serif;cursor:pointer;transition:background var(--duration-fast),border-color var(--duration-fast),transform var(--duration-fast)}
+.motion-tab:hover{border-color:var(--brand);background:#fff2eb}
+.motion-tab:active{transform:scale(.97)}
+.motion-tab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.motion-tab[aria-pressed="true"]{border-color:var(--brand);background:#fbe4d8;color:var(--brand-dark)}
+.technique-tips{margin:var(--space-4) 0;padding:var(--space-3) var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:#fffdfa}
+.technique-tips summary{cursor:pointer;font-weight:800;color:var(--brand-dark)}
+.technique-tips .step-list{margin:var(--space-4) 0 0}
+@keyframes motion-stage-in{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:none}}
 
 @media(max-width:650px){
+  .motion-study{grid-template-columns:1fr;padding:12px}
+  .motion-art{min-height:205px}
+  .motion-art img{width:min(100%,240px)}
+  .motion-tabs{margin-top:14px}
   .path-unit .path-unit-heading{padding:18px 16px 16px}
   .path-unit .path-nodes{--rail-width:64px;--node-size:46px;padding:12px 12px 16px}
   .roadmap-spine{left:12px;top:12px}
@@ -92,4 +111,4 @@
   .checkpoint-copy{padding:9px 10px}
   .checkpoint-copy strong{font-size:.9rem}
 }
-@media(prefers-reduced-motion:reduce){.roadmap-complete,.checkpoint,.checkpoint-copy{transition:none}}
+@media(prefers-reduced-motion:reduce){.roadmap-complete,.checkpoint,.checkpoint-copy,.motion-tab{transition:none}.motion-art img{animation:none}}

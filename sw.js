@@ -1,5 +1,6 @@
-const CACHE='rakshaone-shell-v8';
-const SHELL=['./','./index.html','./styles.css','./roadmap.css','./manifest.webmanifest','./assets/logo.png','./assets/favicon.ico','./assets/icons/icon-192.png','./assets/icons/icon-512.png','./js/app.js','./js/experience.js','./js/roadmap.js','./js/camera-flow.js','./js/config.js','./js/store.js','./js/curriculum.js','./js/assessment.js','./js/pose.js'];
+const CACHE='rakshaone-shell-v9';
+const MOTION=['ready_stance','open_guard','head_cover','side_step','guard_step','boundary_raise','retreat_step','exit_turn','cover_raise'].flatMap(id=>[1,2,3].map(stage=>`./assets/motion/${id}-${stage}.webp`));
+const SHELL=['./','./index.html','./styles.css','./roadmap.css','./manifest.webmanifest','./assets/logo.png','./assets/favicon.ico','./assets/icons/icon-192.png','./assets/icons/icon-512.png','./js/app.js','./js/experience.js','./js/motion-guides.js','./js/roadmap.js','./js/camera-flow.js','./js/config.js','./js/store.js','./js/curriculum.js','./js/assessment.js','./js/pose.js',...MOTION];
 self.addEventListener('install', event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate', event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch', event=>{

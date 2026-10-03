@@ -78,20 +78,20 @@ export const units = [
 ];
 // Camera activities only assess visible solo motion; words, intent, and partners are never scored.
 const cameraActivities = {
-  'foundations.boundary': ['boundary_raise', 'Start with relaxed arms. Say your boundary as you raise both open hands; the camera checks the hand movement, not your words.'],
+  'foundations.boundary': ['boundary_raise', 'Choose an open side. Raise both open hands without blocking your view, then take one step toward that exit. If useful, say a short boundary; the camera checks the gesture and step, not your words.'],
   'movement.ready': ['ready_stance', 'Find a comfortable base: feet apart, shoulders above hips, and room to move. Hold it for the camera.'],
   'movement.distance': ['guard_step', 'Show open hands, then take one side step away from an imagined person. The camera checks your step and balance.'],
-  'movement.stepback': ['retreat_step', 'Stand still first, then take one controlled step away from the camera into clear space.'],
-  'movement.angle': ['exit_turn', 'Face the camera first, then turn partway toward an imagined exit while keeping your feet uncrossed.'],
+  'movement.stepback': ['retreat_step', 'Check that the space behind you is clear. Stand still, move both feet one step away from the camera, then settle without crossing them.'],
+  'movement.angle': ['exit_turn', 'Choose an open side. Turn partway toward it, then take one step into that space without crossing your feet.'],
   'awareness.position': ['side_step', 'Choose an open side and take one clear step into it. The camera checks movement, not whether the real room is safe.'],
-  'voice.boundaries': ['boundary_raise', 'Say a one-sentence boundary while you lift open hands from a relaxed position. The camera checks the gesture only.'],
+  'voice.boundaries': ['boundary_raise', 'Choose an exit. Use a short boundary as you raise open hands, then step toward that exit. The camera checks your movement, not your voice.'],
   'position.guard': ['open_guard', 'Lift open hands near your chest without hiding your view. The camera checks your hands, elbows, and balance.'],
-  'position.head': ['cover_raise', 'Start with relaxed arms, then bring both hands beside your head while keeping your view clear.'],
+  'position.head': ['cover_raise', 'Start with relaxed arms. Bring both hands beside your head, keep your eyes on open space, then step away while maintaining the cover.'],
   'contact.space': ['guard_step', 'Show open hands and move one step toward your open route. The camera checks solo movement, not contact.'],
-  'scenarios.street': ['boundary_raise', 'Rehearse a short refusal while raising open hands. The camera checks the gesture, not your voice.'],
+  'scenarios.street': ['boundary_raise', 'Imagine a stranger pressuring you to move. Use a brief refusal, raise open hands, and step toward people or a clear exit. The camera checks the movement only.'],
   'scenarios.party': ['side_step', 'Imagine a clear gap in a crowd. Take one slow side step toward that opening.'],
-  'scenarios.transit': ['retreat_step', 'Imagine someone closing in. Take one controlled step away from the camera into clear space.'],
-  'scenarios.school': ['exit_turn', 'Imagine a supervised exit at your side. Turn partway toward it without crossing your feet.'],
+  'scenarios.transit': ['retreat_step', 'Imagine someone closing in. Check behind you, move both feet one step into clear space, then keep your balance and seek staff.'],
+  'scenarios.school': ['exit_turn', 'Imagine a supervised exit at your side. Turn toward it and take one step into open space without crossing your feet.'],
   'review.mix': ['guard_step', 'Combine open hands with one deliberate side step, then settle in balance. Say your boundary if comfortable.']
 };
 for (const unit of units) for (const item of unit.lessons) {
