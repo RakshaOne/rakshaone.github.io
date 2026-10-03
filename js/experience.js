@@ -21,7 +21,10 @@ const shapes = {
   laptop:'<rect x="4" y="4" width="16" height="12" rx="1"/><path d="M2 20h20l-2-4H4z"/>',
   book:'<path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1zm0 0v15"/>',
   chevron:'<path d="m9 5 7 7-7 7"/>',
-  star:'<path d="m12 2 3 6.5 7 .9-5 5 .9 7-5.9-3.3-5.9 3.3.9-7-5-5 7-.9z"/>'
+  star:'<path d="m12 2 3 6.5 7 .9-5 5 .9 7-5.9-3.3-5.9 3.3.9-7-5-5 7-.9z"/>',
+  eye:'<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/>',
+  message:'<path d="M4 5h16v12H9l-5 4V5z"/><path d="M8 9h8m-8 4h5"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 5 2 2 5-5"/>'
 };
 export function icon(name, size=22) {
   return `<svg class="ui-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${shapes[name]||shapes.shield}</svg>`;

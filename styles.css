@@ -416,6 +416,44 @@ p{line-height:1.62}
 .badge p{font-size:.84rem;color:var(--muted);margin:0}
 .badge-state{margin-top:auto;font-size:.76rem;font-weight:800;color:var(--brand-dark)}
 .badge.locked .badge-state{color:#887d76}
+.awards-head{max-width:720px}
+.award-group{margin-top:var(--space-10)}
+.award-group .section-heading{margin-bottom:var(--space-4)}
+.award-group .section-heading h2{font-size:clamp(1.35rem,2vw,1.7rem);margin:2px 0 0}
+.award-group .badge-grid{margin-top:0}
+.badge{--award:#b94d3b;--award-soft:#fff2e9;--award-line:#e8b19d;position:relative;overflow:hidden;justify-content:space-between;min-height:218px;transition:transform var(--duration-medium) var(--ease-out),box-shadow var(--duration-medium)}
+.tone-peach{--award:#ad6336;--award-soft:#fff2e5;--award-line:#e9bc9a}
+.tone-gold{--award:#91611c;--award-soft:#fff7e4;--award-line:#e6cf91}
+.tone-teal{--award:#26776b;--award-soft:#eaf6f1;--award-line:#a8d6c9}
+.tone-plum{--award:#795b89;--award-soft:#f5edf7;--award-line:#d5bfde}
+.tone-blue{--award:#456f9a;--award-soft:#edf4fa;--award-line:#b8d0e8}
+.badge.earned{background:var(--award-soft);border-color:var(--award-line)}
+.badge.earned:before{content:"";position:absolute;width:135px;height:135px;right:-48px;top:-50px;border:1px solid var(--award-line);border-radius:50%;opacity:.65;pointer-events:none}
+.badge-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative}
+.badge-symbol,.badge.locked .badge-symbol{width:60px;height:60px;border-radius:18px;background:var(--award);color:#fff}
+.badge.locked .badge-symbol{background:var(--award-soft);color:var(--award);opacity:.73}
+.badge-check{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--award);box-shadow:0 3px 10px rgba(60,40,30,.09)}
+.badge h3{position:relative;font-size:1.15rem;line-height:1.18;margin:0 0 6px}
+.badge p{position:relative;font-size:.86rem;line-height:1.45}
+.badge-foot{display:grid;gap:9px;margin-top:auto}
+.badge-state,.badge.locked .badge-state{color:var(--award)}
+.badge.locked .badge-state{opacity:.75}
+.badge-meter{display:block;height:6px;border-radius:100px;background:rgba(55,43,36,.09);overflow:hidden}
+.badge-meter i{display:block;height:100%;background:var(--award);border-radius:inherit;transition:width .45s var(--ease-out)}
+.badge.locked .badge-meter i{opacity:.65}
+@media(hover:hover) and (pointer:fine){.badge.earned:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}}
+.achievement-toast-stack{--award:#b94d3b;--award-soft:#fff2e9;--award-line:#e8b19d;position:fixed;top:calc(20px + env(safe-area-inset-top));right:20px;z-index:var(--z-toast);display:grid;gap:10px;width:min(360px,calc(100vw - 32px));pointer-events:none}
+.achievement-toast{display:flex;align-items:center;gap:13px;padding:12px 14px;background:var(--surface);border:1px solid var(--award-line);border-left:5px solid var(--award);border-radius:var(--radius-md);box-shadow:0 14px 32px rgba(53,37,29,.17);pointer-events:auto;animation:award-arrive .35s var(--ease-out) both}
+.achievement-toast:hover{background:var(--award-soft)}
+.achievement-toast:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.achievement-toast-icon{display:grid;place-items:center;width:44px;height:44px;flex:none;border-radius:13px;background:var(--award-soft);color:var(--award)}
+.achievement-toast span:nth-child(2){display:grid;gap:1px;flex:1}
+.achievement-toast small{font-size:.67rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--award)}
+.achievement-toast strong{font:800 1.02rem/1.15 Outfit,sans-serif;color:var(--ink)}
+.achievement-toast>.ui-icon{color:var(--award)}
+@keyframes award-arrive{from{opacity:0;transform:translateY(-12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:650px){.achievement-toast-stack{top:calc(12px + env(safe-area-inset-top));right:12px}}
+@media(prefers-reduced-motion:reduce){.badge,.badge-meter i{transition:none}.achievement-toast{animation:none}}
 
 /* Profile, camera and setup */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);align-items:start}

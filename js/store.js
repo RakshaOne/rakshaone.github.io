@@ -6,6 +6,15 @@ export const db = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSess
 export const state = { user: null, profile: null, progress: new Map(), attempts: [], days: [], calibrations: [], loading: true };
 
 function fail(error) { if (error) throw error; }
+async function loadActivityDays(userId) {
+  const rows=[];
+  for(let offset=0;;offset+=500){
+    const { data, error }=await db.from('activity_days').select('*').eq('user_id',userId).order('activity_date',{ascending:false}).range(offset,offset+499);
+    fail(error);
+    rows.push(...(data||[]));
+    if((data||[]).length<500)return {data:rows,error:null};
+  }
+}
 export async function loadAccount() {
   const { data: { user }, error } = await db.auth.getUser();
   if (error && error.name !== 'AuthSessionMissingError') throw error;
@@ -16,7 +25,7 @@ export async function loadAccount() {
     db.from('profiles').select('*').eq('user_id', user.id).maybeSingle(),
     db.from('lesson_progress').select('*').eq('user_id', user.id),
     db.from('exercise_attempts').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(100),
-    db.from('activity_days').select('*').eq('user_id', user.id).order('activity_date', { ascending: false }).limit(90),
+    loadActivityDays(user.id),
     db.from('device_calibrations').select('*').eq('user_id', user.id)
   ]);
   for (const result of tables) fail(result.error);

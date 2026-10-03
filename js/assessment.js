@@ -42,9 +42,9 @@ export const ASSESSMENTS = {
     { id:'base', label:'Stable feet', metric:'stanceWidth', range:[0.7,1.9], weight:2, low:'Keep a little room between your feet.', high:'Bring your feet a little closer.' },
     { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' }
   ]},
-  retreat_step: { title:'Step back into space', view:'Face the camera with clear space behind you.', kind:'dynamic', required:['depth','ankles','feet'], movement:'back', moveCue:'Take one controlled step away; move both feet and stay upright.', target:'Stand still first, then step back until both feet have moved away and you are balanced.', criteria:[
+  retreat_step: { title:'Step back into space', view:'Face the camera with clear space behind you.', kind:'dynamic', required:['depth','scale','feet'], movement:'back', moveCue:'Take one controlled step away, then bring your other foot under you.', target:'Stand still first, then step back into clear space and settle upright with both feet uncrossed.', criteria:[
     { id:'depth', label:'Step away', metric:'depthChange', range:[0.045,0.35], weight:4, low:'Take one clear step backward into safe space.' },
-    { id:'ankles', label:'Both feet moved', metric:'ankleRise', range:[0.025,0.28], weight:4, low:'Move both feet back rather than bending in place.' },
+    { id:'scale', label:'Whole body moved', metric:'widthChange', range:[0.025,0.3], weight:4, low:'Move your whole body away from the camera, then regain your stance.' },
     { id:'upright', label:'Stay upright', metric:'upright', range:[0,0.55], weight:2, high:'Keep your head over your hips.' },
     { id:'feet', label:'Feet uncrossed', metric:'footOrder', range:[0.15,3], weight:3, low:'Uncross your feet so each stays on its own side.' }
   ]},
@@ -69,7 +69,7 @@ const idealRanges={
   stanceWidth:[0.95,1.5],footOrder:[0.45,2],balance:[0,0.25],upright:[0,0.27],
   handHeight:[-0.03,0.16],elbowSpread:[0.3,0.85],earDistance:[0,0.6],
   travel:[0.5,1.8],recovery:[0,0.35],handLift:[0.3,0.58],
-  depthChange:[0.075,0.22],ankleRise:[0.045,0.16],turnAmount:[0.27,0.5]
+  depthChange:[0.075,0.22],widthChange:[0.055,0.18],turnAmount:[0.27,0.5]
 };
 export function requiredLandmarks(assessmentId) {
   const common = [11,12,23,24,27,28];
@@ -114,7 +114,7 @@ export function metrics(p, calibration, session={}) {
     travel:session.travel || 0,
     handLift:session.handLift || 0,
     depthChange:session.depthChange || 0,
-    ankleRise:session.ankleRise || 0,
+    widthChange:session.widthChange || 0,
     turnAmount:session.turnAmount || 0,
     recovery:session.recovery ?? 1,
     bodyCenter:center
@@ -160,6 +160,8 @@ export function updateMovement(session, pose, calibration, assessmentId='side_st
   const bodyHeight=Math.max(abs(shoulders.y-ankles.y),0.2);
   const hipHeight=Math.max(abs(hips.y-ankles.y),0.1);
   const shoulderRatio=abs(pose[12].x-pose[11].x)/bodyHeight;
+  const shoulderSpan=abs(pose[12].x-pose[11].x);
+  const hipSpan=abs(pose[24].x-pose[23].x);
   if(session.phase==='ready'){
     const armsLow=(pose[15].y-shoulders.y)/bodyHeight>0.25&&(pose[16].y-shoulders.y)/bodyHeight>0.25;
     const facing=shoulderRatio>=(calibration?.shoulderWidth/calibration?.bodyHeight||0.2)*0.78;
@@ -176,7 +178,8 @@ export function updateMovement(session, pose, calibration, assessmentId='side_st
       session.originHands=[pose[15].y,pose[16].y];
       session.originBodyHeight=bodyHeight;
       session.originHipHeight=hipHeight;
-      session.originAnkles=[pose[27].y,pose[28].y];
+      session.originShoulderSpan=shoulderSpan;
+      session.originHipSpan=hipSpan;
       session.originShoulderRatio=shoulderRatio;
     }
     return session;
@@ -197,9 +200,11 @@ export function updateMovement(session, pose, calibration, assessmentId='side_st
     if(['move','step'].includes(session.phase)&&session.travel>=(mode==='horizontal'?0.35:0.28))session.phase='settle';
     if(session.phase==='settle')session.recovery=abs(hips.x-ankles.x)/sw;
   }else if(mode==='back'){
-    session.depthChange=1-(0.65*bodyHeight/session.originBodyHeight+0.35*hipHeight/session.originHipHeight);
-    session.ankleRise=Math.min(session.originAnkles[0]-pose[27].y,session.originAnkles[1]-pose[28].y)/session.originBodyHeight;
-    if(session.phase==='move'&&session.depthChange>=0.045&&session.ankleRise>=0.025)session.phase='settle';
+    const observedDepth=1-(0.65*bodyHeight/session.originBodyHeight+0.35*hipHeight/session.originHipHeight);
+    const observedWidth=Math.min(1-shoulderSpan/Math.max(session.originShoulderSpan,0.04),1-hipSpan/Math.max(session.originHipSpan,0.04));
+    session.depthChange=session.depthChange==null?observedDepth:session.depthChange*.7+observedDepth*.3;
+    session.widthChange=session.widthChange==null?observedWidth:session.widthChange*.7+observedWidth*.3;
+    if(session.phase==='move'&&session.depthChange>=0.045&&session.widthChange>=0.025)session.phase='settle';
   }else if(mode==='turn'){
     session.turnAmount=Math.max(0,1-shoulderRatio/session.originShoulderRatio);
     if(session.phase==='move'&&session.turnAmount>=0.18)session.phase='step';

@@ -109,14 +109,24 @@ const backSession={phase:'ready'};
 updateMovement(backSession,p,calibration,'retreat_step',0);
 updateMovement(backSession,p,calibration,'retreat_step',1300);
 assert.equal(evaluate('retreat_step',p,calibration,backSession).passed,false);
+assert.ok(evaluate('retreat_step',p,calibration,backSession).score<80,'standing still cannot look like a near-perfect retreat');
 const crouch=base();for(const i of [11,12])crouch[i].y+=.07;for(const i of [23,24])crouch[i].y+=.04;
 updateMovement(backSession,crouch,calibration,'retreat_step',1400);
 assert.equal(backSession.phase,'move','bending in place must not count as stepping back');
-const back=base();for(const point of back)point.y=.2+(point.y-.2)*.93;
-updateMovement(backSession,back,calibration,'retreat_step',1400);
+const back=base();for(const point of back){point.x=.5+(point.x-.5)*.93;point.y=.2+(point.y-.2)*.93}
+for(const time of [1500,1600,1700,1800])updateMovement(backSession,back,calibration,'retreat_step',time);
 assert.equal(backSession.phase,'settle');
-updateMovement(backSession,back,calibration,'retreat_step',2000);
+updateMovement(backSession,back,calibration,'retreat_step',2400);
 assert.equal(evaluate('retreat_step',back,calibration,backSession).passed,true);
+const highCamera=base();for(const point of highCamera){point.x=.5+(point.x-.5)*.93;point.y=1.5+(point.y-1.5)*.93}
+const highCameraSession={phase:'ready'};updateMovement(highCameraSession,p,calibration,'retreat_step',0);updateMovement(highCameraSession,p,calibration,'retreat_step',1300);
+updateMovement(highCameraSession,highCamera,calibration,'retreat_step',1400);updateMovement(highCameraSession,highCamera,calibration,'retreat_step',2000);
+assert.equal(evaluate('retreat_step',highCamera,calibration,highCameraSession).passed,true,'camera angle must not require ankles to rise');
+const bent=base();for(const i of [11,12])bent[i].y+=.07;for(const i of [23,24])bent[i].y+=.04;
+const bendSession={phase:'ready'};updateMovement(bendSession,p,calibration,'retreat_step',0);updateMovement(bendSession,p,calibration,'retreat_step',1300);
+updateMovement(bendSession,bent,calibration,'retreat_step',1400);
+assert.equal(evaluate('retreat_step',bent,calibration,bendSession).passed,false,'crouching in place cannot count as retreat');
+assert.ok(evaluate('retreat_step',bent,calibration,bendSession).score<80);
 const footLift=base();footLift[27].y-=.06;
 const liftSession={phase:'ready'};updateMovement(liftSession,p,calibration,'retreat_step',0);updateMovement(liftSession,p,calibration,'retreat_step',1300);
 updateMovement(liftSession,footLift,calibration,'retreat_step',1400);
