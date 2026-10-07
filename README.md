@@ -4,24 +4,24 @@ RakshaOne is a solo-first personal safety learning app. It teaches awareness, bo
 
 ## Architecture
 
-The frontend is static vanilla HTML, CSS, and JavaScript. It has no build step. Hash routes keep deep links compatible with GitHub Pages. Supabase provides email/password authentication and per-user progress. Browser camera frames stay on the device; only derived calibration metrics, criterion scores, and progress are persisted.
+The frontend is static vanilla HTML, CSS, and JavaScript. There is no build step. Hash routes keep deep links compatible with GitHub Pages. Supabase provides email/password authentication and per-user progress. Browser camera frames stay on the device; only derived calibration metrics, criterion scores, and progress are persisted.
 
-| File | Responsibility |
-| --- | --- |
-| `index.html`, `styles.css`, `roadmap.css` | App shell, responsive design tokens, and visual learning path |
-| `js/curriculum.js` | Versioned units, lessons, and content blocks |
-| `js/achievements.js` | Durable award rules derived from progress and practice days |
-| `js/motion-guides.js`, `assets/motion/` | Three illustrated movement stages for each camera activity |
-| `js/app.js` | Routes and reusable lesson, quiz, camera, and account views |
-| `js/experience.js` | Shared icons, lesson-stage continuity, and per-learner resume position |
-| `js/roadmap.js` | Responsive unit environments and smooth checkpoint paths |
-| `js/camera-flow.js` | Hands-free hold gates for calibration and assessment |
-| `js/store.js` | Supabase auth client and per-user persistence |
-| `js/assessment.js` | Configured pose rules, visibility, smoothing, and scoring |
-| `js/pose.js` | MediaPipe model, camera lifecycle, live skeleton, and target overlay |
-| `SCHEMA.sql` | Reproducible schema, grants, and RLS policies |
-| `sw.js`, `manifest.webmanifest` | Installable PWA shell and icons |
-| `tools/blender_training.py` | Reproducible Blender Grease Pencil source for the movement studies |
+| File                                      | Responsibility                                                         |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| `index.html`, `styles.css`, `roadmap.css` | App shell, responsive design tokens, and visual learning path          |
+| `js/curriculum.js`                        | Versioned units, lessons, and content blocks                           |
+| `js/achievements.js`                      | Durable award rules derived from progress and practice days            |
+| `js/motion-guides.js`, `assets/motion/`   | Three illustrated movement stages for each camera activity             |
+| `js/app.js`                               | Routes and reusable lesson, quiz, camera, and account views            |
+| `js/experience.js`                        | Shared icons, lesson-stage continuity, and per-learner resume position |
+| `js/roadmap.js`                           | Responsive unit environments and smooth checkpoint paths               |
+| `js/camera-flow.js`                       | Hands-free hold gates for calibration and assessment                   |
+| `js/store.js`                             | Supabase auth client and per-user persistence                          |
+| `js/assessment.js`                        | Configured pose rules, visibility, smoothing, and scoring              |
+| `js/pose.js`                              | MediaPipe model, camera lifecycle, live skeleton, and target overlay   |
+| `SCHEMA.sql`                              | Reproducible schema, grants, and RLS policies                          |
+| `sw.js`, `manifest.webmanifest`           | Installable PWA shell and icons                                        |
+| `tools/blender_training.py`               | Reproducible Blender Grease Pencil source for the movement studies     |
 
 ## Local development
 
